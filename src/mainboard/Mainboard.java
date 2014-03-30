@@ -2,17 +2,30 @@ package mainboard;
 
 import gral2demo.AgpGraphicCard;
 import gral2demo.HddDrive;
+import gral2demo.Ram;
 
 public class Mainboard {
 
 	private IdePort[] idePorts;
+	private RamPort[] ramPorts;
+	
 	private AgpSlot agpSlot;
+	private GraphicCardType graphicCardType;
 
-	public Mainboard(int idePorts )
+	public Mainboard(GraphicCardType type, int idePorts, int ramPorts)
 	{
+		this.graphicCardType = type;
+		
+		this.ramPorts=new RamPort[ramPorts];
+		for(int i=0; i<ramPorts;i++)
+		{
+			this.ramPorts[i]=new RamPort(this);
+		}
+		
 		this.idePorts=new IdePort[idePorts];
 		for(int i=0;i<idePorts;i++)
 			this.idePorts[i]=new IdePort(this);
+		
 		this.agpSlot=new AgpSlot(this);
 	}
 
@@ -39,6 +52,14 @@ public class Mainboard {
 		
 	}
 	
+	public void installRam(Ram ram, int portNumber)
+	{
+		if(ramPorts[portNumber].isAvaible())
+			ramPorts[portNumber].installDevice(ram);
+		else
+			System.out.println("\nSlot: "+portNumber+" jest niedostepny");
+	}
+	
 	public String getFullDescription()
 	{
 		String result;
@@ -51,6 +72,14 @@ public class Mainboard {
 		result=result+"\n----------------------------\n";
 		result=result + "Graphic Card: \n";
 		result+=agpSlot.getDescription();
+		
+		result=result+"\n----------------------------\n";
+		result=result + "Ram Ports: \n";
+		for(int i=0;i<idePorts.length;i++)
+		{
+			result=result+"";
+		}
+		
 		return result;
 	}
 }
